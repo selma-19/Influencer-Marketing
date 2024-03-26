@@ -21,5 +21,4 @@ def scrape_user(username: str):
 	)
 	data = json.loads(result.content)
 	formatted_data = json.dumps(data["data"]["user"], indent=4)
-
 	return formatted_data
