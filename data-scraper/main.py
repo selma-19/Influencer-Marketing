@@ -118,9 +118,10 @@ def load_data(file):
     return data
 
 influencers=load_data("D:\Instagram scraping\Influencer-Marketing\data-scraper\influencers.json")['influencers_list']
-for i in range(109,124 ):
+for i in range(205,208 ):
     influencer_info=parse_user(scrape_user(influencers[i]))
     write_data("scrapped-data.txt",influencer_info)
+
 if __name__ == '__main__':
     user=input()
     print(scraper.scrape_user(user))
