@@ -4,6 +4,20 @@ import services.influencers_sevice as influencers_service
 translator = GoogleTranslator(source='auto', target='en')
 influencers=influencers_service.get_influencers()
 
+def translate_title(influencer,post_type):
+	posts = influencer.get(post_type, [])
+	updated_posts = []
+	for post in posts:
+		title = post.get('title')
+		try:
+			translated_title = translator.translate(title)
+		except Exception as e:
+			print(f"An exception occurred: {e}. Skipping this caption.")
+			continue
+		print(translated_title)
+		post['title'] = translated_title
+		updated_posts.append(post)
+		influencers_service.update_influencer(influencer, post_type, updated_posts)
 def translate_captions(influencer,post_type):
 	posts = influencer.get(post_type, [])
 	updated_posts = []
@@ -29,8 +43,11 @@ for influencer in influencers:
 	#translated_bio=translator.translate(bio)
 	#influencers_service.update_influencer(influencer,'bio',translated_bio)
 	#translate post captions
-	translate_captions(influencer,'videos')
-	translate_captions(influencer,'images')
+	#translate_captions(influencer,'videos')
+	#translate_captions(influencer,'images')
+	translate_title(influencer,'videos')
+	translate_title(influencer,'images')
+
 
 
 
