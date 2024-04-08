@@ -1,13 +1,9 @@
-import scraper
-import dataParser
-import os
-#import influencers
-# Press the green button in the gutter to run the script.
 import json
 import httpx
 import jmespath
 from bs4 import BeautifulSoup
 import requests
+import mongo
 
 client = httpx.Client(
     headers={
@@ -89,12 +85,13 @@ def scrape_user(username: str):
     result = client.get(
         f"https://i.instagram.com/api/v1/users/web_profile_info/?username={username}",
     )
+    print(result)
     data = json.loads(result.content)
     return data["data"]["user"]
 
 def scrape_for_influencers():
     influencers=[]
-    for nb_pages in range(29):
+    for nb_pages in range(15):
         url="https://www.influenceurs.tn/?page="+str(nb_pages+1)
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -117,12 +114,12 @@ def load_data(file):
         data=json.load(f)
     return data
 
-influencers=load_data("D:\Instagram scraping\Influencer-Marketing\data-scraper\influencers.json")['influencers_list']
-for i in range(205,208 ):
+influencers=load_data("influencers.json")['influencers_list']
+for i in range(536,536+30):
     influencer_info=parse_user(scrape_user(influencers[i]))
-    write_data("scrapped-data.txt",influencer_info)
+    write_data("scraped-data.txt",influencer_info)
 
 if __name__ == '__main__':
     user=input()
-    print(scraper.scrape_user(user))
+    print(scrape_user(user))
 
