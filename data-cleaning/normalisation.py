@@ -1,6 +1,5 @@
 from unidecode import unidecode
-import services.influencers_sevice as influencers_service
-
+from services import influencers_service
 
 def normalize_text(text):
     # Convert text to lowercase
