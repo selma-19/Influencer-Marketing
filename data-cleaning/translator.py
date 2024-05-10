@@ -44,11 +44,12 @@ def translate_captions(influencer, post_type):
 # translate bio and captions
 for influencer in influencers:
     # translate bio
-    # bio=influencer.get('bio')
-    # translated_bio=translator.translate(bio)
-    # influencers_service.update_influencer(influencer,'bio',translated_bio)
+    bio=influencer.get('Bio')
+    translated_bio=translator.translate(bio)
+    print( "translated: ",translated_bio)
+    influencers_service.update_influencer(influencer,'Bio',translated_bio)
     # translate post captions
     # translate_captions(influencer,'videos')
     # translate_captions(influencer,'images')
-    translate_title(influencer, 'videos')
-    translate_title(influencer, 'images')
+    # translate_title(influencer, 'videos')
+    # translate_title(influencer, 'images')

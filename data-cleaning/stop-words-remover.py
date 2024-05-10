@@ -53,11 +53,12 @@ def remove_title_stopwords(influencer, post_type):
 
 for influencer in influencers:
     # remove from bio bio
-    bio = influencer.get('bio')
+    bio = influencer.get('Bio')
     no_stopwords_bio = remove_stopwords(bio, stopwords_en)
-    influencers_service.update_influencer(influencer, 'bio', no_stopwords_bio)
-    # Supprimer les stopwords des profils
-    remove_title_stopwords(influencer, 'videos')
-    remove_title_stopwords(influencer, 'images')
-    remove_captions_stopwords(influencer, 'images')
-    remove_captions_stopwords(influencer, 'images')
+    print(no_stopwords_bio)
+    influencers_service.update_influencer(influencer, 'Bio', no_stopwords_bio)
+    # # Supprimer les stopwords des profils
+    # remove_title_stopwords(influencer, 'videos')
+    # remove_title_stopwords(influencer, 'images')
+    # remove_captions_stopwords(influencer, 'images')
+    # remove_captions_stopwords(influencer, 'images')

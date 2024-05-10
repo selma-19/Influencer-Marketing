@@ -44,16 +44,22 @@ def remove_title_emojis(influencer, post_type):
 
 
 def remove_bio_emojis(influencer):
-    bio = influencer.get('bio')
+    bio = influencer.get('Bio')
     no_emoji_bios = remove_emojis(bio)
-    influencers_service.update_influencer(influencer, 'bio', no_emoji_bios)
+    influencers_service.update_influencer(influencer, 'Bio', no_emoji_bios)
+
+def remove_name_emojis(influencer):
+    name = influencer.get('Name')
+    no_emoji_bios = remove_emojis(name)
+    influencers_service.update_influencer(influencer, 'Name', no_emoji_bios)
 
 
-# test
+# remove emojis for influencer profiles
 
 for influencer in influencers:
+    remove_name_emojis(influencer)
     remove_bio_emojis(influencer)
-    remove_title_emojis(influencer, 'videos')
-    remove_title_emojis(influencer, 'images')
-    remove_caption_emojis(influencer, 'videos')
-    remove_caption_emojis(influencer, 'images')
+    # remove_title_emojis(influencer, 'videos')
+    # remove_title_emojis(influencer, 'images')
+    # remove_caption_emojis(influencer, 'videos')
+    # remove_caption_emojis(influencer, 'images')

@@ -45,17 +45,21 @@ def lemmatize_titles(influencer, post_type, ):
 
 
 def lemmatize_bio(influencer):
-    bio = influencer.get('bio')
+    bio = influencer.get('Bio')
+    print(bio)
     lemmatized_bio = lemmatize_text(bio)
     print(lemmatized_bio)
-    # influencers_service.update_influencer(influencer, 'bio', lemmatized_bio)
+    influencers_service.update_influencer(influencer, 'Bio', lemmatized_bio)
 
 
 # test
 
+i=0
 for influencer in influencers:
     lemmatize_bio(influencer)
-    lemmatize_titles(influencer, 'images')
-    lemmatize_titles(influencer, 'videos')
-    lemmatize_capions(influencer, 'images')
-    lemmatize_capions(influencer, 'videos')
+    print("treated bios so far : ",i)
+    i=i+1
+    # lemmatize_titles(influencer, 'images')
+    # lemmatize_titles(influencer, 'videos')
+    # lemmatize_capions(influencer, 'images')
+    # lemmatize_capions(influencer, 'videos')
