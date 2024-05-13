@@ -1,5 +1,5 @@
 import spacy
-import services.influencers_sevice as influencers_service
+import services.influencers_service as influencers_service
 from unidecode import unidecode
 
 influencers = influencers_service.get_influencers()

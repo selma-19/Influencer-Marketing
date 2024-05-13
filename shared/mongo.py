@@ -14,10 +14,10 @@ class MongoConnection:
 
             config = configparser.ConfigParser()
             config.read('../config.ini')
-            mongo_config = config['MongoDB']  # Access the MongoDB section
-            cls.host = mongo_config.get("HOST", "localhost")
-            cls.port = int(mongo_config.get("PORT", 27017))
-            cls.database_name = mongo_config.get("DB_NAME", "InfluencersMarketing")
+            cls.mongo_config = config['MongoDB']  # Access the MongoDB section
+            cls.host = cls.mongo_config.get("HOST", "localhost")
+            cls.port = int(cls.mongo_config.get("PORT", 27017))
+            cls.database_name = cls.mongo_config.get("DB_NAME", "InfluencersMarketing")
         try:
             # Creating client
             cls.client = MongoClient(cls.host, cls.port, serverSelectionTimeoutMS=5000)
@@ -26,8 +26,8 @@ class MongoConnection:
             cls.client.admin.command('ping')
 
             cls.database = cls.client[cls.database_name]
-            cls.collection = cls.database[mongo_config.get("INFLUENCERS_COLLECTION")]
-            cls.posts = cls.database[mongo_config.get("POSTS_COLLECTION")]
+            cls.collection = cls.database[cls.mongo_config.get("INFLUENCERS_COLLECTION")]
+            cls.posts = cls.database[cls.mongo_config.get("POSTS_COLLECTION")]
 
             print("MongoDB connection established")
         except ConnectionFailure as e:
@@ -35,7 +35,6 @@ class MongoConnection:
             print(f"Could not connect to MongoDB: {e}")
 
         return cls._instance
-
 
     def get_database(self):
         return self.database

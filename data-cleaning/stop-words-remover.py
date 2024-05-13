@@ -1,7 +1,7 @@
 import nltk
 from nltk.corpus import stopwords
 
-import services.influencers_sevice as influencers_service
+import services.influencers_service as influencers_service
 
 nltk.download('stopwords')
 

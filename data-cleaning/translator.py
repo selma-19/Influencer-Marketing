@@ -1,6 +1,6 @@
 from deep_translator import GoogleTranslator
 
-import services.influencers_sevice as influencers_service
+import services.influencers_service as influencers_service
 
 translator = GoogleTranslator(source='auto', target='en')
 influencers = influencers_service.get_influencers()
