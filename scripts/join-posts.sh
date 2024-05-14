@@ -37,7 +37,7 @@ db.newPosts.aggregate([
             input: "$posts",
             initialValue: "",
             in: {
-              $concat: ["$$value", "$$this"]
+              $concat: ["$$value", " ", "$$this"]
             }
           }
         }
