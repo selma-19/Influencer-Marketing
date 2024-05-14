@@ -2,62 +2,39 @@
 #change the collection name according to the name of your collection
 db.newPosts.aggregate([
   {
-    $unset:
-      /**
-       * Provide the field name to exclude.
-       * To exclude multiple fields, pass the field names in an array.
-       */
-      "shortcode"
-  },
-  {
-    $group:
-      /**
-       * _id: The id of the group.
-       * fieldN: The first field name.
-       */
-      {
-        _id: "$owner.id",
-        post_ids: {
-          $push: "$$ROOT.id"
-        },
-        posts: {
-          $push: "$$ROOT.caption"
-        }
+    $project: {
+      id: 1,
+      owner: 1,
+      caption: {
+        $arrayElemAt: [
+          "$edge_media_to_caption.edges.node.text",
+          0
+        ]
       }
+    }
   },
   {
-    $set:
-      /**
-       * specifications: The fields to
-       *   include or exclude.
-       */
-      {
-        posts: {
-          $reduce: {
-            input: "$posts",
-            initialValue: "",
-            in: {
-              $concat: ["$$value", " ", "$$this"]
-            }
+    $group: {
+      _id: "$owner.id",
+      post_ids: {
+        $push: "$$ROOT.id"
+      },
+      posts: {
+        $push: "$$ROOT.caption"
+      }
+    }
+  },
+  {
+    $set: {
+      posts: {
+        $reduce: {
+          input: "$posts",
+          initialValue: "",
+          in: {
+            $concat: ["$$value", " ", "$$this"]
           }
         }
       }
-  },
-  {
-    $out:
-      /**
-       * Provide the name of the output database and collection.
-       */
-      {
-        db: "InfluencersMarketing",
-        coll: "joinedPosts"
-        /*
-    timeseries: {
-    timeField: 'field',
-    bucketMaxSpanSeconds: 'number',
-    granularity: 'granularity'
     }
-    */
-      }
   }
 ])
