@@ -1,8 +1,9 @@
 import configparser
+import logging
 from typing import Optional
 
 from pymongo import MongoClient
-from pymongo.errors import ConnectionFailure
+from pymongo.errors import ConnectionFailure, ConfigurationError, ServerSelectionTimeoutError
 
 
 class MongoConnection:
@@ -29,12 +30,21 @@ class MongoConnection:
             cls.collection = cls.database[cls.mongo_config.get("INFLUENCERS_COLLECTION")]
             cls.posts = cls.database[cls.mongo_config.get("POSTS_COLLECTION")]
 
-            print("MongoDB connection established")
-        except ConnectionFailure as e:
+            logging.info("MongoDB connection established successfully")
+        except (ConnectionFailure, ConfigurationError, ServerSelectionTimeoutError) as e:
             cls._instance = None
-            print(f"Could not connect to MongoDB: {e}")
+            logging.error(f"Could not connect to MongoDB: {e}")
+            raise
 
         return cls._instance
 
     def get_database(self):
-        return self.database
+        if self.database is not None:
+            return self.database
+        else:
+            logging.error("Database connection is not established")
+            raise ConnectionFailure("Database connection is not established")
+
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
