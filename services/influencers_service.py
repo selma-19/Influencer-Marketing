@@ -11,7 +11,7 @@ class InfluencersService:
         config.read('../config.ini')
         mongo_config = config['MongoDB']  # Access the MongoDB section
 
-        self.posts_collection = db[mongo_config.get("POSTS_COLLECTION", "Posts")]
+        self.posts_collection = db[mongo_config.get("POSTS_COLLECTION", "posts")]
         self.influencers_collection = db[mongo_config.get("INFLUENCERS_COLLECTION", "Influencers")]
         logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
