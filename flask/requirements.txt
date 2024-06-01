@@ -1,14 +1,9 @@
-pymongo~=4.6.3
+hdbscan~=0.8.36
 httpx~=0.27.0
 jmespath~=1.0.1
 Unidecode~=1.3.8
 spacy~=3.7.4
 nltk~=3.8.1
 scipy < 1.13.0
-bertopic~=0.16.2
+bertopic==0.16.2
 Flask~=3.0.3
-transformers~=4.41.2
-pandas~=2.2.2
-torch~=2.3.0
-numpy~=1.26.4
-scikit-learn~=1.5.0rc1
