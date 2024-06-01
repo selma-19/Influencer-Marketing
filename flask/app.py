@@ -11,50 +11,87 @@ from scraper import scrape_user
 model_path = "model-training/model/bert_9"
 topic_model = BERTopic.load(model_path)
 topic_labels = topic_model.generate_topic_labels()
+
 app = Flask(__name__)
+
+
+def get_topic_details(topic_id):
+    return {'id': topic_id, 'label': topic_labels[topic_id+1]}
+
+
+def scrape_user_data(name):
+    scraped_data = scrape_user(name)
+    if 'data' not in scraped_data or 'user' not in scraped_data['data']:
+        raise ValueError("Invalid user data received")
+
+    user_data = parse_user(scraped_data['data']['user'])
+    bio = user_data['bio']
+    category = user_data['category']
+    result = {'bio': bio, 'category': category}
+    return result
+
+
+def predict_topics(text):
+    topics, probs = topic_model.transform([text])
+    topic_details = get_topic_details(topics[0])
+    return topic_details, probs.tolist()
 
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    data = request.json
-    text = data['text']
+    try:
+        data = request.json
+        if 'text' not in data:
+            return jsonify({'error': 'Missing text input'}), 400
 
-    # Get topic predictions
-    topics, probs = topic_model.transform([text])
+        text = data['text']
 
-    return jsonify(
-        {'topics': topics.tolist(), 'probs': probs.tolist()})  # return jsonify({'topics': topic_labels.tolist()})
+        # Get topic predictions
+        topic_details, probs = predict_topics(text)
+        topic_label = topic_details['label']
+        return jsonify({'label': topic_label, 'probs': probs})
+    except Exception as e:
+        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
 
 
 @app.route('/scrape', methods=['POST'])
 def scrape():
-    data = request.json
-    name = data['name']
-    user_data = (parse_user(scrape_user(name)['data']['user']))
-    bio = user_data['bio']
-    category = user_data['category']
-    return jsonify({'bio': bio, 'category': category})
+    try:
+        data = request.json
+        if 'name' not in data:
+            return jsonify({'error': 'Missing username input'}), 400
+
+        name = data['name']
+
+        # Scrape user data
+
+        result = scrape_user_data(name)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
 
 
 @app.route('/predict_user', methods=['POST'])
 def full_process():
-    data = request.json
-    name = data['name']
+    try:
+        data = request.json
+        if 'name' not in data:
+            return jsonify({'error': 'Missing username input'}), 400
 
-    # Step 1: Scrape the user data
-    scraped_data = scrape_user(name)
-    user_data = parse_user(scraped_data['data']['user'])
+        name = data['name']
+        user_data = scrape_user_data(name)
+        bio = user_data['bio']
+        category = user_data['category']
+        if category is not None:
+            bio += ' ' + category
 
-    # Step 2: Predict the category based on user data
-    bio = user_data['bio']
-    category = user_data['category']
-    if (category is not None):
-        bio += category
-    cleaned_bio = clean_and_process_content(bio)
-    topics, probs = topic_model.transform([cleaned_bio])
+        cleaned_bio = clean_and_process_content(bio)
+        topic_details, probs = predict_topics(cleaned_bio)
 
-    return jsonify(
-        {'bio': cleaned_bio, 'topics': topics.tolist(), 'probs': probs.tolist()})  # return jsonify({'topics': topic_labels})
+        result = {'bio': cleaned_bio, 'topics': topic_details, 'probs': probs}
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
 
 
 if __name__ == '__main__':
