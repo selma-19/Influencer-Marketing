@@ -1,4 +1,5 @@
 from bertopic import BERTopic
+import pickle
 from flask import Flask, request, jsonify
 
 from cleaning import clean_and_process_content
@@ -7,16 +8,19 @@ from dataParser import parse_user
 # from dataScraper.scraper import scrape_user
 from scraper import scrape_user
 
+input_file = f'./bert_9.pkl'
+
+with open(input_file, 'rb') as f_in:
+    topic_model = pickle.load(f_in)
+
 # Load the BERTopic model
-model_path = "model-training/model/bert_9"
-topic_model = BERTopic.load(model_path)
 topic_labels = topic_model.generate_topic_labels()
 
 app = Flask(__name__)
 
 
 def get_topic_details(topic_id):
-    return {'id': topic_id, 'label': topic_labels[topic_id+1]}
+    return {'id': int(topic_id), 'label': topic_labels[topic_id + 1]}
 
 
 def scrape_user_data(name):
