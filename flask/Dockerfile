@@ -1,5 +1,4 @@
 FROM python:3.9-slim
-#LABEL authors="wawao"
 
 # Set the working directory in the container
 WORKDIR /flask
@@ -8,7 +7,6 @@ WORKDIR /flask
 COPY . /flask
 
 # Install Python dependencies
-
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     gcc \
@@ -21,11 +19,5 @@ RUN python -m spacy download en_core_web_sm
 # Make port 5000 available to the world outside this container
 EXPOSE 5000
 
-# Debugging step to list contents
-RUN ls /flask
-# Define environment variable
-ENV NAME InfluencerMarketingModel
-
 # Run app.py when the container launches
-#CMD ["python", "app.py"]
 ENTRYPOINT ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
